@@ -5,7 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-        base: '/laexicon/', 
+    base: '/ae-lexicon/', // Required for GitHub Pages
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
