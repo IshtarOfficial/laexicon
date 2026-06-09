@@ -21,7 +21,7 @@ export function MainPane({ entry, onTagClick }: MainPaneProps) {
       setLoading(true);
       setHumanContent('');
       try {
-        const res = await fetch(`https://raw.githubusercontent.com/IshtarOfficial/ae-lexicon/main/entries/${entry.filename}`);
+        const res = await fetch(`https://raw.githubusercontent.com/IshtarOfficial/laexicon/main/entries/${entry.filename}`);
         if (!res.ok) throw new Error('Failed to fetch');
         const text = await res.text();
         if (isMounted) setHumanContent(text);
