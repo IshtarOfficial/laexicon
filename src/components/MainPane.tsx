@@ -186,7 +186,7 @@ export function MainPane({ entry, onTagClick }: MainPaneProps) {
             <div className="text-[10px] uppercase tracking-widest text-white/30 flex justify-between items-center">
               <span>Conceptual Tags // Semantic Cloud</span>
               <a 
-                 href={`https://github.com/IshtarOfficial/ae-lexicon/tree/main/entries/${entry.filename}`}
+                 href={`https://github.com/IshtarOfficial/laexicon/tree/main/entries/${entry.filename}`}
                  target="_blank"
                  rel="noopener noreferrer"
                  className="text-[#00f0ff] hover:text-[#ff00ff] transition-colors"
