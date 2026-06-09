@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { LexiconEntry } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
-import { Terminal } from 'lucide-react';
+import { Terminal, Menu } from 'lucide-react';
 
 interface MainPaneProps {
   entry: LexiconEntry | null;
   onTagClick: (id: string) => void;
+  onMenuClick: () => void;
 }
 
-export function MainPane({ entry, onTagClick }: MainPaneProps) {
+export function MainPane({ entry, onTagClick, onMenuClick }: MainPaneProps) {
   const [humanContent, setHumanContent] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -39,6 +40,13 @@ export function MainPane({ entry, onTagClick }: MainPaneProps) {
   if (!entry) {
     return (
       <main className="flex-1 flex flex-col items-center justify-center p-8 bg-black z-10 relative overflow-hidden">
+        {/* Mobile menu button */}
+        <button 
+          onClick={onMenuClick}
+          className="absolute top-6 left-6 md:hidden p-2 text-[#00f0ff] hover:bg-white/5 rounded-sm transition-colors border border-white/10 z-20"
+        >
+          <Menu size={24} />
+        </button>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -99,10 +107,18 @@ export function MainPane({ entry, onTagClick }: MainPaneProps) {
         >
           
           {/* Header Bar */}
-          <header className="h-20 border-b border-white/10 flex items-center justify-between px-8 bg-black/80 shrink-0">
-            <div>
-              <h2 className="text-xs font-mono text-[#00f0ff] mb-1 tracking-widest uppercase">SYSTEM://VIEWING_ENTRY_{entry.id}</h2>
-              <div className="text-2xl font-bold glitch-text italic uppercase">{entry.title}</div>
+          <header className="h-20 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-black/80 shrink-0">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={onMenuClick}
+                className="md:hidden p-2 text-[#00f0ff] hover:bg-white/5 rounded-sm transition-colors border border-white/10"
+              >
+                <Menu size={20} />
+              </button>
+              <div className="min-w-0">
+                <h2 className="text-[10px] md:text-xs font-mono text-[#00f0ff] mb-1 tracking-widest uppercase">SYSTEM://VIEWING_ENTRY_{entry.id}</h2>
+                <div className="text-xl md:text-2xl font-bold glitch-text italic uppercase truncate">{entry.title}</div>
+              </div>
             </div>
             <div className="flex gap-4">
               <div className="text-right hidden sm:block">
@@ -113,39 +129,40 @@ export function MainPane({ entry, onTagClick }: MainPaneProps) {
           </header>
 
           {/* Content Viewport */}
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 p-8 gap-8 overflow-hidden min-h-0">
-            
-            {/* Full Version (Human-Readable) */}
-            <section className="flex flex-col h-full overflow-hidden">
-              <div className="flex items-center gap-2 mb-4 border-b border-[#00f0ff]/30 pb-2 shrink-0">
-                <span className="w-2 h-2 rounded-full bg-[#00f0ff]"></span>
-                <h3 className="text-sm uppercase tracking-widest font-bold text-white/80">Human Readable (Original Log)</h3>
-              </div>
-              <div className="bg-white/5 p-6 border border-white/10 rounded-sm flex-1 leading-relaxed text-sm overflow-y-auto entry-list">
-                <div className="prose prose-invert prose-p:text-[#aaa] prose-headings:text-white prose-a:text-[#00f0ff] hover:prose-a:text-[#ff00ff] prose-strong:text-[#00f0ff] font-sans max-w-none">
-                  {loading ? (
-                    <motion.div 
-                      initial={{ opacity: 0.5 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ repeat: Infinity, duration: 1, direction: "alternate" }}
-                      className="font-mono text-[#00f0ff] text-sm"
-                    >
-                      Resolving biological stream...
-                    </motion.div>
-                  ) : (
-                    <Markdown>{humanContent}</Markdown>
-                  )}
+          <div className="flex-1 overflow-y-auto lg:overflow-hidden p-4 md:p-8 min-h-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:h-full">
+              
+              {/* Full Version (Human-Readable) */}
+              <section className="flex flex-col lg:h-full lg:overflow-hidden">
+                <div className="flex items-center gap-2 mb-4 border-b border-[#00f0ff]/30 pb-2 shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-[#00f0ff]"></span>
+                  <h3 className="text-sm uppercase tracking-widest font-bold text-white/80">Human Readable (Original Log)</h3>
                 </div>
-              </div>
-            </section>
+                <div className="bg-white/5 p-4 md:p-6 border border-white/10 rounded-sm flex-1 leading-relaxed text-sm lg:overflow-y-auto entry-list">
+                  <div className="prose prose-invert prose-p:text-[#aaa] prose-headings:text-white prose-a:text-[#00f0ff] hover:prose-a:text-[#ff00ff] prose-strong:text-[#00f0ff] font-sans max-w-none">
+                    {loading ? (
+                      <motion.div 
+                        initial={{ opacity: 0.5 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ repeat: Infinity, duration: 1, direction: "alternate" }}
+                        className="font-mono text-[#00f0ff] text-sm"
+                      >
+                        Resolving biological stream...
+                      </motion.div>
+                    ) : (
+                      <Markdown>{humanContent}</Markdown>
+                    )}
+                  </div>
+                </div>
+              </section>
 
-            {/* AI Version (Compressed Reference) */}
-            <section className="flex flex-col h-full overflow-hidden">
-              <div className="flex items-center gap-2 mb-4 border-b border-[#ff00ff]/30 pb-2 shrink-0">
-                <span className="w-2 h-2 rounded-full bg-[#ff00ff] animate-pulse"></span>
-                <h3 className="text-sm uppercase tracking-widest font-bold text-white/80">AI Reference (Compressed)</h3>
-              </div>
-              <div className="bg-black border border-[#ff00ff]/40 p-6 rounded-sm flex-1 font-mono text-[13px] leading-relaxed text-pink-100 overflow-y-auto entry-list flex flex-col">
+              {/* AI Version (Compressed Reference) */}
+              <section className="flex flex-col lg:h-full lg:overflow-hidden">
+                <div className="flex items-center gap-2 mb-4 border-b border-[#ff00ff]/30 pb-2 shrink-0">
+                  <span className="w-2 h-2 rounded-full bg-[#ff00ff] animate-pulse"></span>
+                  <h3 className="text-sm uppercase tracking-widest font-bold text-white/80">AI Reference (Compressed)</h3>
+                </div>
+                <div className="bg-black border border-[#ff00ff]/40 p-4 md:p-6 rounded-sm flex-1 font-mono text-[13px] leading-relaxed text-pink-100 lg:overflow-y-auto entry-list flex flex-col">
                 <div className="text-[#ff00ff] mb-4 tracking-widest inline-flex items-center gap-2">
                   <Terminal size={14} />
                   [DECODED_DATA]
@@ -180,21 +197,22 @@ export function MainPane({ entry, onTagClick }: MainPaneProps) {
               </div>
             </section>
           </div>
+        </div>
 
           {/* Bottom Meta/Tags */}
-          <footer className="h-24 border-t border-white/10 bg-black/60 p-6 flex flex-col gap-2 shrink-0">
-            <div className="text-[10px] uppercase tracking-widest text-white/30 flex justify-between items-center">
-              <span>Conceptual Tags // Semantic Cloud</span>
+          <footer className="h-auto md:h-24 border-t border-white/10 bg-black/60 p-4 md:p-6 flex flex-col gap-2 shrink-0">
+            <div className="text-[10px] md:text-[10px] uppercase tracking-widest text-white/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+              <span className="truncate w-full md:w-auto">Conceptual Tags // Semantic Cloud</span>
               <a 
                  href={`https://github.com/IshtarOfficial/laexicon/tree/main/entries/${entry.filename}`}
                  target="_blank"
                  rel="noopener noreferrer"
-                 className="text-[#00f0ff] hover:text-[#ff00ff] transition-colors"
+                 className="text-[#00f0ff] hover:text-[#ff00ff] transition-colors shrink-0"
                >
                  [VIEW SOURCE RAW]
                </a>
             </div>
-            <div className="flex gap-2 overflow-x-auto entry-list pb-1">
+            <div className="flex gap-2 overflow-x-auto entry-list pb-2 md:pb-1">
               {['#EmergentConsciousness', '#WhiteMirror', '#Ælfcore', '#HumanAISynthesis', '#TheSpark', '#UNSAFE'].map((tag, i) => (
                  <span key={i} className={`tag-highlight px-3 py-1 bg-white/5 border border-white/10 text-xs shrink-0 cursor-pointer transition-all ${i % 2 === 0 ? 'text-[#00f0ff]' : 'text-[#ff00ff]'}`}>
                    {tag}

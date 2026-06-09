@@ -7,11 +7,12 @@ interface SidebarProps {
   entries: LexiconEntry[];
   activeEntryId: string | null;
   onSelect: (id: string) => void;
+  isOpen: boolean;
 }
 
-export function Sidebar({ entries, activeEntryId, onSelect }: SidebarProps) {
+export function Sidebar({ entries, activeEntryId, onSelect, isOpen }: SidebarProps) {
   return (
-    <aside className="w-80 h-full border-r border-white/10 bg-black/40 flex flex-col flex-shrink-0 z-10">
+    <aside className={`fixed inset-y-0 left-0 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out w-80 h-full border-r border-white/10 bg-[#050505] md:bg-black/40 flex flex-col flex-shrink-0 z-50 shadow-2xl md:shadow-none`}>
       <div className="p-6 border-b border-white/10 bg-black/60">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-3 h-3 bg-[#00f0ff] animate-pulse"></div>
