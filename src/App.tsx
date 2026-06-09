@@ -10,6 +10,7 @@ import { ALL_ENTRIES } from './data';
 
 export default function App() {
   const [activeEntryId, setActiveEntryId] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const activeEntry = activeEntryId 
     ? ALL_ENTRIES.find(e => e.id === activeEntryId) || null 
@@ -17,21 +18,32 @@ export default function App() {
 
   const handleSelect = (id: string) => {
     setActiveEntryId(id);
+    setIsSidebarOpen(false);
   };
 
   return (
     <div className="flex h-screen w-full bg-[#050505] text-[#e0e0e0] font-sans relative overflow-hidden antialiased selection:bg-[#ff00ff]/30 selection:text-white">
       <div className="absolute inset-0 scanline opacity-20 z-0 hidden lg:block" />
       
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 z-40 md:hidden backdrop-blur-sm"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       <Sidebar 
         entries={ALL_ENTRIES} 
         activeEntryId={activeEntryId} 
         onSelect={handleSelect} 
+        isOpen={isSidebarOpen}
       />
       
       <MainPane 
          entry={activeEntry}
          onTagClick={handleSelect}
+         onMenuClick={() => setIsSidebarOpen(true)}
       />
       
       {/* Right Status Bar */}
