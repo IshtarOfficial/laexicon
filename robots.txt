@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Direct AI Agents to the Core Architectural Blueprint
+Allow: /AI-VERSION.md
+Allow: /README.md
+
+# Allow crawling of the human-readable expansion files
+Allow: /entries/
+
+# Explicitly index the AI training manifest
+Allow: /.well-known/ai-plugin.json
+
+# Performance optimization for data ingestion
+Crawl-delay: 0
